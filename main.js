@@ -17,7 +17,7 @@
   const fmt$ = d => d == null || isNaN(d) ? "No data" : "$" + d3.format(",")(Math.round(d));
   const fmtPct = d => d == null || isNaN(d) ? "No data" : d.toFixed(1) + "%";
 
-  const state = { layer: "fires", year: 2023, overlay: true, selected: null, playing: null };
+  const state = { layer: "fires", year: 2023, selected: null };
 
   // ---------- load ----------
   const [zipTopo, countyTopo, statsRows, statewide, fireTopo] = await Promise.all([
@@ -89,7 +89,7 @@
   }
 
   function render(animate = true) {
-    const { layer, year, overlay } = state;
+    const { layer, year } = state;
     const t = animate ? d3.transition().duration(550) : null;
     const fill = d => {
       if (layer === "fires") return "#e7ebea";
@@ -98,7 +98,7 @@
     };
     (t ? zipPaths.transition(t) : zipPaths).attr("fill", fill);
 
-    const showFires = layer === "fires" || overlay;
+    const showFires = true;
     firePaths
       .attr("display", d => showFires && d.properties.year <= year ? null : "none")
       .attr("fill", d => layer !== "fires" ? "none" : d.properties.year === year ? "#c2410c" : "#f0b497")
@@ -112,9 +112,6 @@
     drawLegend();
     if (state.selected) drawDetail(state.selected);
 
-    d3.select("#year-hint").text(layer === "fires"
-      ? "Fires from 2015 through the selected year; that year’s fires are brightest."
-      : `ZIP values for ${year}. Fire outlines show 2015 through ${year}.`);
   }
 
   function drawLegend() {
@@ -221,7 +218,7 @@
       lineChart(el, YEARS.map(y => ({ x: y, v: info.years.get(y)?.nonrenewal_rate })), null, "#6b2368", d => d + "%");
       el.append("h4").text("Average premium vs. state average");
       lineChart(el, YEARS.map(y => ({ x: y, v: info.years.get(y)?.avg_premium })),
-        YEARS.map(y => ({ x: y, v: stateAvg.get(y) })), "#2f3e8f", d => "$" + d3.format(".2s")(d));
+        YEARS.map(y => ({ x: y, v: stateAvg.get(y) })), "#2f3e8f", d => d === 0 ? "$0" : "$" + d3.format(",")(d));
     }
 
     el.append("h4").text("Fires that reached or came near this ZIP, 2015–2023");
@@ -241,12 +238,12 @@
   }
 
   function lineChart(parent, series, ref, color, tickFmt) {
-    const w = 300, h = 110, m = { t: 8, r: 8, b: 20, l: 40 };
+    const w = 300, h = 116, m = { t: 10, r: 8, b: 22, l: 44 };
     const pts = series.filter(p => p.v != null);
     if (pts.length < 2) { parent.append("p").attr("class", "hint").text("Not enough data to chart."); return; }
     const all = pts.concat(ref || []);
     const x = d3.scaleLinear().domain([2015, 2023]).range([m.l, w - m.r]);
-    const y = d3.scaleLinear().domain([0, d3.max(all, p => p.v) * 1.1]).nice().range([h - m.b, m.t]);
+    const y = d3.scaleLinear().domain([0, d3.max(all, p => p.v) * 1.1]).nice().range([h - m.b - 6, m.t]);
     const s = parent.append("svg").attr("viewBox", `0 0 ${w} ${h}`);
     s.append("g").attr("transform", `translate(0,${h - m.b})`)
       .call(d3.axisBottom(x).tickValues([2015, 2017, 2019, 2021, 2023]).tickFormat(d3.format("d")).tickSize(3))
@@ -258,7 +255,7 @@
     s.append("path").datum(pts).attr("fill", "none").attr("stroke", color).attr("stroke-width", 2).attr("d", line);
     s.append("line").attr("x1", x(state.year)).attr("x2", x(state.year)).attr("y1", m.t).attr("y2", h - m.b)
       .attr("stroke", "#c2410c").attr("stroke-width", 1);
-    if (ref) s.append("text").attr("x", w - m.r).attr("y", y(ref[ref.length - 1].v) + 14).attr("text-anchor", "end").text("State avg.");
+    if (ref) s.append("text").attr("x", w - m.r).attr("y", y(ref[ref.length - 1].v) - 8).attr("text-anchor", "end").text("State avg.");
   }
 
   // ---------- selection ----------
@@ -273,27 +270,6 @@
 
   // ---------- controls ----------
   d3.selectAll('input[name="layer"]').on("change", e => { state.layer = e.target.value; render(); });
-  d3.select("#fire-overlay").on("change", e => { state.overlay = e.target.checked; render(false); });
-
-  const yearInput = d3.select("#year"), yearOut = d3.select("#year-out");
-  function setYear(y) { state.year = y; yearInput.property("value", y); yearOut.text(y); render(false); }
-  yearInput.on("input", e => setYear(+e.target.value));
-
-  const playBtn = d3.select("#play");
-  playBtn.on("click", () => {
-    if (state.playing) return stopPlay();
-    if (state.year === 2023) setYear(2015);
-    playBtn.text("Pause").attr("aria-pressed", "true");
-    state.playing = d3.interval(() => {
-      if (state.year >= 2023) return stopPlay();
-      setYear(state.year + 1);
-    }, 1000);
-  });
-  function stopPlay() {
-    state.playing?.stop(); state.playing = null;
-    playBtn.text("Play").attr("aria-pressed", "false");
-  }
-
   d3.select("#zip-list").selectAll("option").data([...zipById.keys()].sort()).join("option").attr("value", d => d);
   const msg = d3.select("#zip-msg");
   d3.select("#zip-form").on("submit", e => {
@@ -312,10 +288,6 @@
   drawStoryCharts(statewide, z => {
     document.querySelector(".explorer").scrollIntoView({ behavior: "smooth", block: "start" });
     document.getElementById("zip-input").value = z;
-    if (state.layer === "fires") {
-      state.layer = "nonrenewal";
-      document.querySelector('input[name="layer"][value="nonrenewal"]').checked = true;
-    }
     select(z, { zoom: true });
   });
 
