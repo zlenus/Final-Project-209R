@@ -144,32 +144,19 @@
 
     <section class="notes">
       <div>
-        <h2>Data and methods</h2>
+        <h2>Write Up</h2>
         <p>
-          ZIP boundaries are 2010 Census ZCTAs, simplified for the web. Fire perimeters come from CAL FIRE’s
-          <a href="https://catalog.data.gov/dataset/california-fire-perimeters-all">California Fire Perimeters</a>
-          dataset, filtered to fires of 100+ acres from 2015 to 2023. Premium and non-renewal figures come from the
-          California Department of Insurance’s
-          <a href="https://www.insurance.ca.gov/01-consumers/200-wrr/DataAnalysisOnWildfiresAndInsurance.cfm">wildfire and insurance data</a>
-          and <a href="https://www.insurance.ca.gov/0400-news/0200-studies-reports/0250-homeowners-study/#A">homeowners study</a>.
-          The fire list in a ZIP’s detail view counts perimeters whose bounding box overlaps the ZIP, so it can
-          include fires that came close without crossing in.
+          1. What have you done so far? 
+          Established the California map and started populating the map with information pertaining to stats of interest.
+          2. What will be the most challenging of your project to design and why?
+          I am merging 3 differnt datasets and trying to make sure it is properly visualized. Currently trying to make sure the perimeter of the fire stays within the map boundaries.
         </p>
-      </div>
-      <div>
-        <h2>Still to build</h2>
-        <ul>
-          <li>Join the full CDI ZIP-level tables, replacing every placeholder value.</li>
-          <li>Compute true distance from each ZIP to the nearest perimeter, matching the bar chart above.</li>
-          <li>Add a premium estimate to the ZIP lookup, with a range rather than a single number.</li>
-          <li>Link the story charts to the map year slider, so scrolling a chart updates the map.</li>
-        </ul>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>Final project for DSC 209R. Team: add names here.</p>
+    <p>Final project for DSC 209R. Team: Zytal Lenus.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
