@@ -1,0 +1,42 @@
+{
+  "_note": "Values read from the proposal's static charts (CDI and CAL FIRE data). Replace with exact figures from the source tables.",
+  "premiums": [
+    {"year": 2008, "value": 945}, {"year": 2009, "value": 955}, {"year": 2010, "value": 988},
+    {"year": 2011, "value": 1010}, {"year": 2012, "value": 1025}, {"year": 2013, "value": 1018},
+    {"year": 2014, "value": 1025}, {"year": 2015, "value": 1040}, {"year": 2016, "value": 1055},
+    {"year": 2017, "value": 1075}, {"year": 2018, "value": 1143}, {"year": 2019, "value": 1249},
+    {"year": 2020, "value": 1315}, {"year": 2021, "value": 1460}, {"year": 2022, "value": 1619},
+    {"year": 2023, "value": 1787}
+  ],
+  "distance": [
+    {"bucket": "Inside a burn area", "rate": 11.4}, {"bucket": "Under 5 km", "rate": 9.9},
+    {"bucket": "5–15 km", "rate": 9.1}, {"bucket": "15–30 km", "rate": 9.0},
+    {"bucket": "Over 30 km", "rate": 8.9}
+  ],
+  "policies": [
+    {"year": 2020, "new": 1008, "nonrenewals": 897}, {"year": 2021, "new": 1092, "nonrenewals": 1038},
+    {"year": 2022, "new": 934, "nonrenewals": 900}, {"year": 2023, "new": 724, "nonrenewals": 788}
+  ],
+  "causes": [
+    {"cause": "Lightning", "acres": 9.0}, {"cause": "Unknown", "acres": 4.25},
+    {"cause": "Miscellaneous", "acres": 2.68}, {"cause": "Power line", "acres": 1.48},
+    {"cause": "Arson", "acres": 1.42}, {"cause": "Equipment use", "acres": 1.23},
+    {"cause": "Campfire", "acres": 0.90}, {"cause": "Vehicle", "acres": 0.68},
+    {"cause": "Debris burning", "acres": 0.34}, {"cause": "Playing with fire", "acres": 0.08},
+    {"cause": "Railroad", "acres": 0.07}
+  ],
+  "zipChange": [
+    {"zip": "95954", "county": "Butte", "r2020": 18.5, "r2023": 46.7},
+    {"zip": "93518", "county": "Kern", "r2020": 12.3, "r2023": 39.6},
+    {"zip": "96033", "county": "Shasta", "r2020": 9.3, "r2023": 36.0},
+    {"zip": "95922", "county": "Yuba", "r2020": 6.2, "r2023": 32.4},
+    {"zip": "93271", "county": "Tulare", "r2020": 9.4, "r2023": 31.8},
+    {"zip": "91905", "county": "San Diego", "r2020": 14.2, "r2023": 32.9},
+    {"zip": "93260", "county": "Tulare", "r2020": 14.0, "r2023": 31.6},
+    {"zip": "95379", "county": "Tuolumne", "r2020": 13.9, "r2023": 29.9},
+    {"zip": "91963", "county": "San Diego", "r2020": 11.0, "r2023": 27.0},
+    {"zip": "95457", "county": "Lake", "r2020": 9.9, "r2023": 25.6},
+    {"zip": "95542", "county": "Humboldt", "r2020": 6.2, "r2023": 20.6},
+    {"zip": "96088", "county": "Shasta", "r2020": 14.8, "r2023": 28.3}
+  ]
+}

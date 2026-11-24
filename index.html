@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Wildfires Affect Insurance Premiums and Their Renewal Rates</title>
+  <meta name="description" content="An interactive map of California wildfires, homeowner insurance premiums and non-renewals by ZIP code.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+</head>
+<body>
+
+  <p class="status">
+    Prototype for course feedback. Map values marked “placeholder” are synthetic stand-ins; the twelve ZIPs in the chart below use CDI figures.
+  </p>
+
+  <header class="masthead">
+    <h1>How wildfires affect insurance premiums and their renewal rates</h1>
+    <p class="lede">
+      Since 2017, California’s average homeowner premium has climbed by about two thirds, and insurers have
+      dropped more policies than they’ve written. This map shows where that pressure lands, ZIP code by ZIP code,
+      next to the fires that came before it.
+    </p>
+  </header>
+
+  <main>
+    <section class="explorer" aria-label="Interactive map">
+      <div class="map-wrap">
+        <svg id="map" role="img" aria-label="Map of California ZIP codes"></svg>
+        <div class="map-tools">
+          <button type="button" id="reset-view">Reset view</button>
+        </div>
+        <div id="tooltip" class="tooltip" role="status" hidden></div>
+        <p id="map-loading" class="map-loading">Loading map data…</p>
+      </div>
+
+      <aside class="panel">
+        <fieldset class="control">
+          <legend>Show on the map</legend>
+          <div class="segmented" role="radiogroup">
+            <label><input type="radio" name="layer" value="fires" checked><span>Fire perimeters</span></label>
+            <label><input type="radio" name="layer" value="premium"><span>Average premium</span></label>
+            <label><input type="radio" name="layer" value="nonrenewal"><span>Non-renewal rate</span></label>
+          </div>
+          <label class="check"><input type="checkbox" id="fire-overlay" checked> Outline fires on top</label>
+        </fieldset>
+
+        <div class="control">
+          <label for="year">Year <output id="year-out" for="year">2023</output></label>
+          <div class="slider-row">
+            <input type="range" id="year" min="2015" max="2023" step="1" value="2023">
+            <button type="button" id="play" aria-pressed="false">Play</button>
+          </div>
+          <p class="hint" id="year-hint">Fires from 2015 through the selected year; that year’s fires are brightest.</p>
+        </div>
+
+        <form class="control" id="zip-form" autocomplete="off">
+          <label for="zip-input">Look up a ZIP code</label>
+          <div class="search-row">
+            <input id="zip-input" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="e.g. 95954" list="zip-list">
+            <button type="submit">Find ZIP</button>
+          </div>
+          <datalist id="zip-list"></datalist>
+          <p class="hint" id="zip-msg" aria-live="polite"></p>
+        </form>
+
+        <div class="legend" id="legend" aria-live="polite"></div>
+
+        <div class="detail" id="detail">
+          <p class="detail-empty">Hover a ZIP for a quick read, or click one to pin its history here.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="story">
+      <article class="beat">
+        <div class="beat-text">
+          <h2>Premiums bent upward after 2017</h2>
+          <p>
+            For a decade the statewide average premium barely moved, rising about $130 between 2008 and 2017.
+            Then came the Tubbs and Thomas fires in 2017 and the Camp Fire in 2018. Over the next six years the
+            average climbed from roughly $1,075 to $1,787.
+          </p>
+        </div>
+        <figure class="beat-chart"><div id="chart-premiums"></div>
+          <figcaption>Average annual homeowner premium, California. Source: CDI homeowners study.</figcaption></figure>
+      </article>
+
+      <article class="beat">
+        <div class="beat-text">
+          <h2>Closer to a burn scar, more likely to be dropped</h2>
+          <p>
+            Between 2015 and 2022, policies in ZIP codes whose center sat inside a burn area were non-renewed at
+            11.4%, compared with under 9% for ZIPs more than 30 km from a fire. The gap is small statewide, but it
+            concentrates in a handful of places.
+          </p>
+        </div>
+        <figure class="beat-chart"><div id="chart-distance"></div>
+          <figcaption>Share of existing policies not renewed, by distance from the ZIP’s center to the nearest fire, 2015–2022. Source: CDI.</figcaption></figure>
+      </article>
+
+      <article class="beat">
+        <div class="beat-text">
+          <h2>In 2023, drops outpaced new policies</h2>
+          <p>
+            New policies and non-renewals tracked each other through 2022. In 2023 new policies fell to about
+            724,000 while non-renewals stayed near 788,000, the first year in this span that more coverage
+            left the market than entered it.
+          </p>
+        </div>
+        <figure class="beat-chart"><div id="chart-policies"></div>
+          <figcaption>Policies, in thousands. Source: CDI.</figcaption></figure>
+      </article>
+
+      <article class="beat">
+        <div class="beat-text">
+          <h2>Twelve ZIPs where non-renewals tripled</h2>
+          <p>
+            In Paradise-area ZIP 95954, nearly half of policies were not renewed in 2023. Most of these places are
+            foothill and mountain communities in Butte, Shasta, Tulare and Kern counties, plus two in eastern San Diego County.
+          </p>
+          <p class="hint">Click a ZIP in the chart to find it on the map.</p>
+        </div>
+        <figure class="beat-chart"><div id="chart-zips"></div>
+          <figcaption>Non-renewal rate, 2020 and 2023. Source: CDI.</figcaption></figure>
+      </article>
+
+      <article class="beat">
+        <div class="beat-text">
+          <h2>What starts the fires</h2>
+          <p>
+            Lightning accounts for the most acreage burned since 2000, about 9 million acres, much of it from the
+            2020 lightning siege. Power lines rank fourth by acreage but sit behind several of the most destructive
+            fires near homes, which matters more to insurers than acreage alone.
+          </p>
+        </div>
+        <figure class="beat-chart"><div id="chart-causes"></div>
+          <figcaption>Acres burned by cause, 2000–2025, in millions. Source: CAL FIRE fire perimeters.</figcaption></figure>
+      </article>
+    </section>
+
+    <section class="notes">
+      <div>
+        <h2>Data and methods</h2>
+        <p>
+          ZIP boundaries are 2010 Census ZCTAs, simplified for the web. Fire perimeters come from CAL FIRE’s
+          <a href="https://catalog.data.gov/dataset/california-fire-perimeters-all">California Fire Perimeters</a>
+          dataset, filtered to fires of 100+ acres from 2015 to 2023. Premium and non-renewal figures come from the
+          California Department of Insurance’s
+          <a href="https://www.insurance.ca.gov/01-consumers/200-wrr/DataAnalysisOnWildfiresAndInsurance.cfm">wildfire and insurance data</a>
+          and <a href="https://www.insurance.ca.gov/0400-news/0200-studies-reports/0250-homeowners-study/#A">homeowners study</a>.
+          The fire list in a ZIP’s detail view counts perimeters whose bounding box overlaps the ZIP, so it can
+          include fires that came close without crossing in.
+        </p>
+      </div>
+      <div>
+        <h2>Still to build</h2>
+        <ul>
+          <li>Join the full CDI ZIP-level tables, replacing every placeholder value.</li>
+          <li>Compute true distance from each ZIP to the nearest perimeter, matching the bar chart above.</li>
+          <li>Add a premium estimate to the ZIP lookup, with a range rather than a single number.</li>
+          <li>Link the story charts to the map year slider, so scrolling a chart updates the map.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Final project for DSC 209R. Team: add names here.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <script src="charts.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
