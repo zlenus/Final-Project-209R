@@ -9,7 +9,7 @@
 set -e
 IN="${1:?Pass the path to the CAL FIRE perimeters GeoJSON}"
 npx -y mapshaper "$IN" \
-  -proj wgs84 \
+  -proj wgs84 init=EPSG:3857 \
   -filter 'YEAR_ >= 2015 && YEAR_ <= 2023 && GIS_ACRES >= 100' \
   -each 'year=+YEAR_, name=FIRE_NAME, acres=Math.round(GIS_ACRES), cause=+CAUSE' \
   -filter-fields year,name,acres,cause \
